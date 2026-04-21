@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -22,9 +24,13 @@ import { AppService } from './app.service';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get('NODE_ENV') !== 'production',
         logging: configService.get('NODE_ENV') === 'development',
+        retryAttempts: 5,
+        retryDelay: 3000,
       }),
       inject: [ConfigService],
     }),
+    UsersModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

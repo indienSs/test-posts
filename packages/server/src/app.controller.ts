@@ -14,4 +14,9 @@ export class AppController {
   getHealth() {
     return this.appService.getHealth();
   }
+
+  @Get('db-status')
+  async getDbStatus() {
+    return this.appService.getDbStatus();
+  }
 }
