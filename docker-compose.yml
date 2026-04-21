@@ -6,17 +6,17 @@ services:
     container_name: project-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
     ports:
-      - "${DB_PORT}:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - project-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,18 +25,19 @@ services:
     build:
       context: ./packages/server
       dockerfile: Dockerfile
+      target: development  # Используем development стадию
     container_name: project-server
     restart: unless-stopped
     environment:
-      NODE_ENV: ${NODE_ENV}
+      NODE_ENV: development
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      PORT: ${SERVER_PORT}
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: appdb
+      PORT: 3000
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "3000:3000"
     volumes:
       - ./packages/server:/app
       - /app/node_modules
@@ -45,19 +46,18 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "npm run start:dev"
 
   client:
     build:
       context: ./packages/client
       dockerfile: Dockerfile
-      target: ${NODE_ENV}
+      target: development
     container_name: project-client
     restart: unless-stopped
     environment:
-      VITE_API_URL: ${VITE_API_URL}
+      VITE_API_URL: http://localhost:3000/api
     ports:
-      - "${CLIENT_PORT}:${CLIENT_PORT}"
+      - "5173:5173"
     volumes:
       - ./packages/client:/app
       - /app/node_modules
@@ -65,7 +65,6 @@ services:
       - project-network
     depends_on:
       - server
-    command: sh -c "npm run dev"
 
 networks:
   project-network:

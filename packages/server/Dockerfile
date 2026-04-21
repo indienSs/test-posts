@@ -1,4 +1,4 @@
-FROM node:22-alpine AS development
+FROM node:20-alpine AS development
 
 WORKDIR /app
 
@@ -11,15 +11,22 @@ EXPOSE 3000
 
 CMD ["npm", "run", "start:dev"]
 
-FROM node:22-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+
+RUN npm ci
+
+RUN npm install -g @nestjs/cli
 
 COPY . .
+
 RUN npm run build
+
+RUN npm prune --production && \
+    npm uninstall -g @nestjs/cli
 
 EXPOSE 3000
 
