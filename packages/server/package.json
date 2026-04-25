@@ -12,7 +12,13 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ormconfig.ts migration:generate src/migrations/Migration",
+    "migration:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ormconfig.ts migration:run",
+    "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ormconfig.ts migration:revert",
+    "migration:show": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ormconfig.ts migration:show",
+    "seed:run": "ts-node src/seeds/run-seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -23,10 +29,10 @@
     "@nestjs/typeorm": "^10.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "pg": "^8.11.0",
-    "reflect-metadata": "^0.1.13",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

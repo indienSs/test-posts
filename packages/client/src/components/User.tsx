@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, message } from 'antd'
+import { Button, Card, message } from 'antd'
 import axios from 'axios'
 import type { User } from '../types/User'
 
@@ -9,7 +9,7 @@ function User() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await axios.get('api/users/00000000-0000-0000-0000-000000000001');
+        const user = await axios.get<User>('api/users/00000000-0000-0000-0000-000000000001');
         setUser(user.data)
       } catch (error) {
         message.error(error.message)
@@ -20,7 +20,22 @@ function User() {
 
   return (
     <Card>
-        User
+      <div>
+        {`${user?.firstName} ${user?.lastName}`}
+      </div>
+      <div>
+        {new Date(user?.birthDate).toDateString()} 
+      </div>
+      <div>
+        {user?.about} 
+      </div>
+      <div>
+        {user?.email} 
+      </div>
+      <div>
+        {user?.phone} 
+      </div>
+      <Button type='primary'>Редактировать</Button>
     </Card>
   )
 }

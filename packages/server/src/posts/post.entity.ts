@@ -22,14 +22,14 @@ export class Post {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   publishDate: Date;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: string;
 
   @ManyToOne(() => User, (user) => user.posts, { 
     onDelete: 'CASCADE',
     eager: true 
   })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @CreateDateColumn()
